@@ -22,7 +22,7 @@ def dentist_detail(request, pk):
     return Response(serializer.data)
 
 
-@api_view({"GET"})
+@api_view(["GET"])
 def service_list(request):
     services = Service.objects.all()
     serialzer = ServiceSerializer(services, many=True)

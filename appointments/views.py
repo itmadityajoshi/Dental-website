@@ -10,14 +10,14 @@ from .serializers import AppointmentSerializer
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])   #control who's allowed to even reach this function 
 def appointment_list(request):
-    if request.uesr.is_staff:
+    if request.uesr.is_staff: # checks whether the logged-in user is marked staff in the database.
         appointments = Appointment.objects.all()
     else:
-        appointments = Appointment.objects.filter(patient=request.user)
-    serializer = AppointmentSerializer(appointments, many=True)
-    return Response(serializer.data)
+        appointments = Appointment.objects.filter(patient=request.user)  # check if they are regular patient and only grab their appointments
+    serializer = AppointmentSerializer(appointments, many=True) # takes whichever queryset got selected above and converts it into json ready-data
+    return Response(serializer.data) #send that JSON back to whoeve called the endppoint.
 
 
 @api_view(["POST"])

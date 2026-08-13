@@ -16,7 +16,7 @@ class Appointment(models.Model):
     patient = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="appointments"
     )
-    dentis = models.ForeignKey(
+    dentist = models.ForeignKey(
         Dentist, on_delete=models.CASCADE, related_name="appointments"
     )
     service = models.ForeignKey(
