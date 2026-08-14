@@ -12,7 +12,7 @@ from .serializers import AppointmentSerializer
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])   #control who's allowed to even reach this function 
 def appointment_list(request):
-    if request.uesr.is_staff: # checks whether the logged-in user is marked staff in the database.
+    if request.user.is_staff: # checks whether the logged-in user is marked staff in the database.
         appointments = Appointment.objects.all()
     else:
         appointments = Appointment.objects.filter(patient=request.user)  # check if they are regular patient and only grab their appointments
