@@ -14,3 +14,18 @@ class AppointmentSerializer(serializers.ModelSerializer):
         if value < timezone.now().date():
             raise serializers.ValidationError("Appointment date cannot be in the past. ")
         return value
+
+    def validate(self, data):  #this validation fun controls all the cancelled appointment as it takes all the data in dic form and compare to for the empty solts so the previous booked date are not occupied.
+        dentist = data.get('dentist')
+        date = data.get('date')
+        time = data.get('time')
+
+        conflict = Appointment.objects.filter(
+            dentist = dentist,
+            date =date,
+            time=time
+        ).exclude(status='cancelled')
+
+        if conflict.exists():
+            raise serializers.ValidationError("This dentist is already booked at that date.")
+        return data
