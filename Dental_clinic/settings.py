@@ -157,3 +157,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
 }
+
+#authentication mode
+AUTH_USER_MODEL = 'accounts.User'
