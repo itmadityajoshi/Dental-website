@@ -1,9 +1,12 @@
 from rest_framework import serializers
 from django.utils import timezone
 from .models import Appointment
+from clinic.serializers import DentistSerializer, ServiceSerializer
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
+    dentist_detail = DentistSerializer(source='dentist', read_only=True)
+    service_detail = ServiceSerializer(source='service', read_only =  True)
     class Meta:
         model = Appointment
         fields = '__all__'
