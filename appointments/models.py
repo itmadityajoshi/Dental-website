@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from clinic.models import Dentist, Service
+from accounts.models import User
 
 # Create your models here.
 
