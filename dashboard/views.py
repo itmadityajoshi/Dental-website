@@ -28,3 +28,12 @@ def update_appointment_status(request,pk):
 
     serializer = AppointmentSerializer(appointment)
     return Response(serializer.data)
+
+
+#sorting the appointments 
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def dashboard_appointments(request):
+    appointments = Appointment.objects.all().order_by('date','time')
+    serializer = AppointmentSerializer(appointments, many=True)
+    return Response(serializer.data)
