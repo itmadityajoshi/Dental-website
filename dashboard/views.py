@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import  status
 from appointments.models import Appointment
 from appointments.serializers import AppointmentSerializer 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 
@@ -13,7 +13,7 @@ from django.shortcuts import render
 @permission_classes([IsAdminUser])
 def update_appointment_status(request,pk):
     try:
-        appointment = Appointment.objects.get(pk=pk)
+        appointment = get_object_or_404(Appointment, pk=pk)
     except Appointment.DoesNotExist:
         return Response({"detail":"Appointment not found."}, status=status.HTTP_404_NOT_FOUND)
     
@@ -27,4 +27,4 @@ def update_appointment_status(request,pk):
     appointment.save()
 
     serializer = AppointmentSerializer(appointment)
-    return Response
+    return Response(serializer.data)
