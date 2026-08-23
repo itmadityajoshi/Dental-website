@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -28,3 +28,23 @@ def appointment_create(request):
         serializer.save(patient=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def cancel_appointment(request,pk):
+    try:
+        appointment = get_object_or_404(Appointment, pk=pk)
+    except Appointment.DoesNotExist:
+        return Response({"detail": "Appointment not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if appointment.patient != request.user and not request.user.is_staff:
+        return Response({"detail":"You do not have permission to cancel this appointment."}, status=status.HTTP_403_FORBIDDEN)
+
+    if appointment.status == "completed":
+        return Response({"detail":"Cannot cancel a completed appointment."}, status=status.HTTP_404_NOT_FOUND)
+
+    appointment.status = 'cancelled'
+    appointment.save()
+    serializer = AppointmentSerializer(appointment)
+    return Response(serializer.data)
