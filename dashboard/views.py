@@ -37,3 +37,5 @@ def dashboard_appointments(request):
     appointments = Appointment.objects.all().order_by('date','time')
     serializer = AppointmentSerializer(appointments, many=True)
     return Response(serializer.data)
+
+

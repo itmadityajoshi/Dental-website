@@ -8,6 +8,8 @@ class Dentist(models.Model):
     specialization = models.CharField(max_length=100, blank=True)
     bio = models.TextField(blank=True)
     photo = models.ImageField(upload_to="dentist_photo/", blank=True, null=True)
+    working_start = models.TimeField(default='09:00')
+    working_end = models.TimeField(default='17:00')
 
     def __str__(self):
         return self.name

@@ -27,3 +27,42 @@ def service_list(request):
     services = Service.objects.all()
     serialzer = ServiceSerializer(services, many=True)
     return Response(serialzer.data)
+
+
+from datetime import datetime, timedelta
+from appointments.models import Appointment
+
+
+@api_view(['GET'])
+def available_slots(request, pk):
+    try:
+        dentist = Dentist.objects.get(pk=pk)
+    except Dentist.DoesNotExist:
+        return Response({"detail": "Dentist not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    date_str = request.query_params.get('date')
+    if not date_str:
+        return Response({"detail": "A 'date' query parameter is required, e.g. ?date=2026-09-01"}, status=status.HTTP_400_BAD_REQUEST)
+
+    booked = Appointment.objects.filter(dentist=dentist, date=date_str).exclude(status='cancelled')
+
+    booked_ranges = []
+    for appt in booked:
+        duration = appt.service.duration_minutes if appt.service else 30
+        start_dt = datetime.combine(appt.date, appt.time)
+        end_dt = start_dt + timedelta(minutes=duration)
+        booked_ranges.append((start_dt, end_dt))
+
+    slots = []
+    slot_length = timedelta(minutes=30)
+    current = datetime.combine(datetime.strptime(date_str, '%Y-%m-%d').date(), dentist.working_start)
+    end_of_day = datetime.combine(datetime.strptime(date_str, '%Y-%m-%d').date(), dentist.working_end)
+
+    while current < end_of_day:
+        slot_end = current + slot_length
+        overlaps = any(current < b_end and slot_end > b_start for b_start, b_end in booked_ranges)
+        if not overlaps:
+            slots.append(current.time().strftime('%H:%M'))
+        current = slot_end
+
+    return Response({"date": date_str, "available_slots": slots})
