@@ -9,4 +9,4 @@ class DentistSerializer(serializers.ModelSerializer):
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
-        fields = ['id','name','description','duration_minute','price']
+        fields = ['id','name','description','duration_minutes','price']

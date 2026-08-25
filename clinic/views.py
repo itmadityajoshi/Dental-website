@@ -4,33 +4,96 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from .models import Dentist, Service
 from .serializers import DentistSerializer, ServiceSerializer
+from datetime import datetime, timedelta
+from appointments.models import Appointment
 
 # Create your views here.
 
 
-@api_view(["GET"])
+@api_view(["GET","POST"])
 def dentist_list(request):
-    dentists = Dentist.objects.all()
-    serializer = DentistSerializer(dentists, many=True)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        dentists = Dentist.objects.all()
+        serializer = DentistSerializer(dentists, many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        if not request.user.is_authenticated or not request.user.is_staff:
+            return Response({"detail":"Only staff  can add dentists."}, status=status.HTTP_403_FORBIDDEN)
+        serializer = DentistSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
+
+@api_view(["GET",'PUT','DELETE'])
 def dentist_detail(request, pk):
-    dentist = Dentist.objects.get(pk=pk)
-    serializer = DentistSerializer(dentist)
-    return Response(serializer.data)
+    try:
+      dentist = Dentist.objects.get(pk=pk)
+    except Dentist.DoesNotExist:
+        return Response({"detail":"Dentist not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = DentistSerializer(dentist)
+        return Response(serializer.data)
+
+    if request.user.is_authenticated or not request.user.is_staff:
+        return Response({"detail":"Only staff can modify dentists."}, status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == "PUT":
+        serializer = DentistSerializer(dentist, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        dentist.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(["GET"])
+@api_view(['GET', 'POST'])
 def service_list(request):
-    services = Service.objects.all()
-    serialzer = ServiceSerializer(services, many=True)
-    return Response(serialzer.data)
+    if request.method == 'GET':
+        services = Service.objects.all()
+        serializer = ServiceSerializer(services, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        if not request.user.is_authenticated or not request.user.is_staff:
+            return Response({"detail": "Only staff can add services."}, status=status.HTTP_403_FORBIDDEN)
+        serializer = ServiceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from datetime import datetime, timedelta
-from appointments.models import Appointment
+@api_view(['GET', 'PUT', 'DELETE'])
+def service_detail(request, pk):
+    try:
+        service = Service.objects.get(pk=pk)
+    except Service.DoesNotExist:
+        return Response({"detail": "Service not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ServiceSerializer(service)
+        return Response(serializer.data)
+
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return Response({"detail": "Only staff can modify services."}, status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == 'PUT':
+        serializer = ServiceSerializer(service, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        service.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
