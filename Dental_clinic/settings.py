@@ -167,3 +167,6 @@ REST_FRAMEWORK = {
 
 #authentication mode
 AUTH_USER_MODEL = 'accounts.User'
+
+
+DEFAULT_FROM_EMAIL = 'noreply@dentalsite.com'
