@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .models import Appointment
 from .serializers import AppointmentSerializer
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -25,7 +26,14 @@ def appointment_list(request):
 def appointment_create(request):
     serializer = AppointmentSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save(patient=request.user)
+        appointment =  serializer.save(patient=request.user)
+
+        send_mail(
+            subject="Appointment Confirmation - Dental Clinic",
+            message=f"Hi {request.user.first_name}, your appointment with DR. {appointment.dentist.name} on {appointment.date} at {appointment.time} has been booked and is pending confirmation.",
+            from_email='noreply@dentalsite.com',
+            recipient_list=[request.user.email],
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
