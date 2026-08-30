@@ -6,11 +6,12 @@ from .serializers import RegisterSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from .models import User
-
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
+from rest_framework.decorators import api_view, throttle_classes
+from .authentication import LoginRateThrottle
 
 # Create your views here.
 
@@ -23,6 +24,7 @@ def register(request):
     return Response(serilazer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+@throttle_classes([LoginRateThrottle])
 def login (request):
     # print("RECEIVED DATA:", request.data)  # temporary debug line
     email = request.data.get('email')

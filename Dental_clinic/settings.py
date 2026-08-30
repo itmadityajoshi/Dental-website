@@ -163,7 +163,18 @@ REST_FRAMEWORK = {
         'accounts.authentication.ExpiringTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
+    #here the rate limits from rest framework is applied
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '20/minute',
+        'user': '60/minute',
+        'login': '5/minute',
+    },
 }
+
 
 #authentication mode
 AUTH_USER_MODEL = 'accounts.User'

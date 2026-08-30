@@ -2,6 +2,7 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.throttling import AnonRateThrottle
 
 
 class ExpiringTokenAuthentication(TokenAuthentication):
@@ -14,3 +15,6 @@ class ExpiringTokenAuthentication(TokenAuthentication):
             raise AuthenticationFailed("Token has expired. Please log in Again.")
 
         return (user, token)
+
+class LoginRateThrottle(AnonRateThrottle):
+    scope = 'login'
