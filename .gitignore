@@ -1,1 +1,49 @@
+# Environment Variables
 .env
+.env.local
+.env.*.local
+
+# Python / Django
+backend/.venv/
+backend/venv/
+*.py[cod]
+*$py.class
+__pycache__/
+*.egg-info/
+dist/
+build/
+*.egg
+.Python
+backend/db.sqlite3
+backend/*.log
+backend/media/
+backend/staticfiles/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.DS_Store
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.env.local
+frontend/.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+dentist_photo/
+*.sqlite3
