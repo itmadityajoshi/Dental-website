@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .serializers import RegisterSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
@@ -14,6 +15,18 @@ from rest_framework.decorators import api_view, throttle_classes
 from .authentication import LoginRateThrottle
 
 # Create your views here.
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user(request):
+    user = request.user
+    return Response({
+        "id": user.id,
+        "email": user.email,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "is_staff": user.is_staff,
+    })
 
 @api_view(['POST'])
 def register(request):

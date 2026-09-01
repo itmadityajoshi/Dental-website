@@ -6,11 +6,17 @@ from clinic.serializers import DentistSerializer, ServiceSerializer
 
 class AppointmentSerializer(serializers.ModelSerializer):
     dentist_detail = DentistSerializer(source='dentist', read_only=True)
-    service_detail = ServiceSerializer(source='service', read_only =  True)
+    service_detail = ServiceSerializer(source='service', read_only=True)
+    patient_name = serializers.CharField(source='patient.get_full_name', read_only=True)
+    dentist_name = serializers.CharField(source='dentist.name', read_only=True)
+    service_name = serializers.CharField(source='service.name', read_only=True)
+    appointment_date = serializers.CharField(source='date', read_only=True)
+    appointment_time = serializers.CharField(source='time', read_only=True)
+    
     class Meta:
         model = Appointment
         fields = '__all__'
-        read_only_fields = ["patient","status", "created_at"]
+        read_only_fields = ["patient", "status", "created_at"]
 
 
     def validate_date(self, value): # it will prevent from booking an appointment from the past date.
