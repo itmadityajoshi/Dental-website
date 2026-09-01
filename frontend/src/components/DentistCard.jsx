@@ -1,42 +1,31 @@
-`DentistCard.jsx`;
+import { useNavigate } from "react-router-dom";
 
 function DentistCard({ dentist }) {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-gray-300 transition">
-      {/* Dentist Image */}
-      <div className="h-52 bg-gray-100 flex items-center justify-center">
-        {dentist.image ? (
-          <img
-            src={dentist.image}
-            alt={dentist.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
-            <span className="text-2xl text-blue-600">
-              {dentist.name?.charAt(0)}
-            </span>
-          </div>
-        )}
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition">
+      <div className="h-48 bg-blue-50 flex items-center justify-center">
+        <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-4xl">
+          👨‍⚕️
+        </div>
       </div>
 
-      {/* Information */}
-      <div className="p-5">
-        <h2 className="text-lg font-semibold text-gray-900">{dentist.name}</h2>
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-800">Dr. {dentist.name}</h3>
 
-        <p className="text-sm text-blue-600 mt-1">{dentist.specialization}</p>
+        <p className="text-blue-600 mt-1">{dentist.specialization}</p>
 
-        {dentist.description && (
-          <p className="text-sm text-gray-500 mt-3 line-clamp-2">
-            {dentist.description}
-          </p>
-        )}
+        <p className="text-gray-500 text-sm mt-3">
+          Experienced dental professional dedicated to patient care.
+        </p>
 
-        <div className="mt-5 pt-4 border-t border-gray-100">
-          <button className="text-sm font-medium text-gray-700 hover:text-blue-600 transition">
-            View profile →
-          </button>
-        </div>
+        <button
+          onClick={() => navigate(`/dentists/${dentist.id}`)}
+          className="mt-5 w-full py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+        >
+          View Profile
+        </button>
       </div>
     </div>
   );
