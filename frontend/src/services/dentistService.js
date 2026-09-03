@@ -15,5 +15,5 @@ export const getAvailableSlots = async (dentistId, date) => {
     `dentists/${dentistId}/available-slots/?date=${date}`,
   );
 
-  return response.data;
+  return response.data.available_slots || [];
 };

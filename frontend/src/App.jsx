@@ -12,6 +12,10 @@ import DashboardPage from "./pages/DashboardPage";
 import DentistsPage from "./pages/DentistsPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
 import BookAppointmentPage from "./pages/BookAppointmentPage";
+import AppointmentDetailsPage from "./pages/AppointmentDetailsPage";
+import PublicHomePage from "./pages/PublicHomePage";
+import PublicServicesPage from "./pages/PublicServicesPage";
+import PublicContactPage from "./pages/PublicContactPage";
 
 // Staff Pages
 import StaffDashboard from "./pages/staff/StaffDashboard";
@@ -20,16 +24,22 @@ import StaffDentists from "./pages/staff/StaffDentists";
 import StaffServices from "./pages/staff/StaffServices";
 import StaffPatients from "./pages/staff/StaffPatients";
 import StaffAdminDashboard from "./pages/staff/StaffAdminDashboard";
+import { useAuth } from "./contexts/AuthContext";
 
-function App() {
+function AppContent() {
+  const { user } = useAuth();
+
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Navbar />
+    <>
+      <Navbar />
+      <div className={user ? "md:pl-64" : ""}>
         <Routes>
           {/* Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/" element={<PublicHomePage />} />
+          <Route path="/services" element={<PublicServicesPage />} />
+          <Route path="/contact" element={<PublicContactPage />} />
 
           {/* Patient Routes */}
           <Route
@@ -61,6 +71,14 @@ function App() {
             element={
               <RoleBasedRoute requiredRole="patient">
                 <BookAppointmentPage />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="/appointments/:id"
+            element={
+              <RoleBasedRoute requiredRole="patient">
+                <AppointmentDetailsPage />
               </RoleBasedRoute>
             }
           />
@@ -116,9 +134,18 @@ function App() {
           />
 
           {/* Fallback */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+      </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
       </AuthProvider>
     </BrowserRouter>
   );

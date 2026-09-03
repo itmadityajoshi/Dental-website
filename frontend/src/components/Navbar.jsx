@@ -1,17 +1,32 @@
 import { useState } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { logout as logoutService } from "../services/authService";
 import { useAuth } from "../contexts/AuthContext";
+
+const patientLinks = [
+  ["Dashboard", "/dashboard", "⌂"],
+  ["Dentists", "/dentists", "♙"],
+  ["My Appointments", "/appointments", "▣"],
+];
+
+const staffLinks = [
+  ["Dashboard", "/staff/dashboard", "⌂"],
+  ["Admin", "/staff/admin", "⚙"],
+  ["Appointments", "/staff/appointments", "▣"],
+  ["Dentists", "/staff/dentists", "♙"],
+  ["Services", "/staff/services", "✚"],
+  ["Patients", "/staff/patients", "♙"],
+];
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { user, userRole, logout } = useAuth();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
+
+  const isStaff = userRole === "staff";
+  const links = isStaff ? staffLinks : patientLinks;
 
   const handleLogout = () => {
     logoutService();
@@ -19,246 +34,88 @@ export default function Navbar() {
     navigate("/login", { replace: true });
   };
 
-  const isStaff = userRole === "staff";
-
-  const navLinkClass = ({ isActive }) =>
-    `px-3 py-2 rounded-lg text-sm font-medium transition ${
-      isActive ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-gray-100"
-    }`;
+  const navigation = (
+    <div className="space-y-2">
+      {links.map(([label, to, icon]) => (
+        <NavLink
+          key={to}
+          to={to}
+          onClick={() => setMobileOpen(false)}
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition ${
+              isActive
+                ? "bg-teal-600 text-white shadow-sm"
+                : "text-slate-300 hover:bg-slate-800 hover:text-white"
+            }`
+          }
+        >
+          <span className="w-6 text-center text-lg" aria-hidden="true">
+            {icon}
+          </span>
+          {label}
+        </NavLink>
+      ))}
+    </div>
+  );
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <NavLink
-            to={isStaff ? "/staff/dashboard" : "/dashboard"}
-            className="flex items-center gap-3 flex-shrink-0"
+    <>
+      <aside className="hidden md:flex fixed inset-y-0 left-0 z-50 w-64 flex-col bg-slate-950 px-5 py-6 text-white">
+        <NavLink
+          to={isStaff ? "/staff/dashboard" : "/dashboard"}
+          className="flex items-center gap-3 px-3 mb-10"
+        >
+          <span className="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center text-xl">
+            ✦
+          </span>
+          <span className="text-xl font-bold">DentalCare</span>
+        </NavLink>
+        <p className="px-4 mb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
+          {isStaff ? "Clinic workspace" : "Patient space"}
+        </p>
+        {navigation}
+        <div className="mt-auto border-t border-slate-800 pt-5">
+          <p className="px-3 text-sm font-semibold truncate">
+            {user.first_name || user.email}
+          </p>
+          <p className="px-3 mt-1 text-xs text-slate-400">
+            {isStaff ? "Staff" : "Patient"}
+          </p>
+          <button
+            onClick={handleLogout}
+            className="w-full mt-4 px-4 py-2 text-left text-sm font-semibold text-red-300 rounded-lg hover:bg-red-950/50"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white text-lg font-bold">
-              🦷
-            </div>
-            <span className="text-xl font-bold text-gray-900 hidden sm:inline">
-              DentalCare
-            </span>
-          </NavLink>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {isStaff ? (
-              // Staff Navigation
-              <>
-                <NavLink to="/staff/dashboard" className={navLinkClass}>
-                  📊 Dashboard
-                </NavLink>
-                <NavLink to="/staff/admin" className={navLinkClass}>
-                  ⚙️ Admin
-                </NavLink>
-                <NavLink to="/staff/appointments" className={navLinkClass}>
-                  📅 Appointments
-                </NavLink>
-                <NavLink to="/staff/dentists" className={navLinkClass}>
-                  👨‍⚕️ Dentists
-                </NavLink>
-                <NavLink to="/staff/services" className={navLinkClass}>
-                  💊 Services
-                </NavLink>
-                <NavLink to="/staff/patients" className={navLinkClass}>
-                  👥 Patients
-                </NavLink>
-              </>
-            ) : (
-              // Patient Navigation
-              <>
-                <NavLink to="/dashboard" className={navLinkClass}>
-                  Dashboard
-                </NavLink>
-                <NavLink to="/dentists" className={navLinkClass}>
-                  Dentists
-                </NavLink>
-                <NavLink to="/appointments" className={navLinkClass}>
-                  My Appointments
-                </NavLink>
-              </>
-            )}
-          </div>
-
-          {/* User Menu */}
-          <div className="flex items-center gap-4">
-            {/* User Info */}
-            <div className="hidden sm:block text-right">
-              <p className="text-sm font-semibold text-gray-900">
-                {user.first_name || user.email}
-              </p>
-              <p className="text-xs text-gray-600 capitalize">
-                {isStaff ? "🧑‍⚕️ Staff" : "👤 Patient"}
-              </p>
-            </div>
-
-            {/* User Avatar with Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold hover:shadow-lg transition"
-              >
-                {user.first_name
-                  ? user.first_name.charAt(0).toUpperCase()
-                  : "U"}
-              </button>
-
-              {/* Dropdown Menu */}
-              {menuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-10">
-                  <div className="px-4 py-2 border-b border-gray-200">
-                    <p className="text-sm font-semibold text-gray-900">
-                      {user.email}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setMenuOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
-            >
-              <svg
-                className="w-6 h-6 text-gray-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
+            Sign out
+          </button>
         </div>
+      </aside>
 
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-2">
-            {isStaff ? (
-              <>
-                <NavLink
-                  to="/staff/dashboard"
-                  className={({ isActive }) =>
-                    `block px-4 py-2 text-sm font-medium ${
-                      isActive ? "bg-blue-50 text-blue-600" : "text-gray-600"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </NavLink>
-                <NavLink
-                  to="/staff/appointments"
-                  className={({ isActive }) =>
-                    `block px-4 py-2 text-sm font-medium ${
-                      isActive ? "bg-blue-50 text-blue-600" : "text-gray-600"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Appointments
-                </NavLink>
-                <NavLink
-                  to="/staff/dentists"
-                  className={({ isActive }) =>
-                    `block px-4 py-2 text-sm font-medium ${
-                      isActive ? "bg-blue-50 text-blue-600" : "text-gray-600"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dentists
-                </NavLink>
-                <NavLink
-                  to="/staff/services"
-                  className={({ isActive }) =>
-                    `block px-4 py-2 text-sm font-medium ${
-                      isActive ? "bg-blue-50 text-blue-600" : "text-gray-600"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Services
-                </NavLink>
-                <NavLink
-                  to="/staff/patients"
-                  className={({ isActive }) =>
-                    `block px-4 py-2 text-sm font-medium ${
-                      isActive ? "bg-blue-50 text-blue-600" : "text-gray-600"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Patients
-                </NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink
-                  to="/dashboard"
-                  className={({ isActive }) =>
-                    `block px-4 py-2 text-sm font-medium ${
-                      isActive ? "bg-blue-50 text-blue-600" : "text-gray-600"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </NavLink>
-                <NavLink
-                  to="/dentists"
-                  className={({ isActive }) =>
-                    `block px-4 py-2 text-sm font-medium ${
-                      isActive ? "bg-blue-50 text-blue-600" : "text-gray-600"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dentists
-                </NavLink>
-                <NavLink
-                  to="/appointments"
-                  className={({ isActive }) =>
-                    `block px-4 py-2 text-sm font-medium ${
-                      isActive ? "bg-blue-50 text-blue-600" : "text-gray-600"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  My Appointments
-                </NavLink>
-              </>
-            )}
-            <button
-              onClick={() => {
-                handleLogout();
-                setMobileMenuOpen(false);
-              }}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 font-medium"
-            >
-              Logout
-            </button>
-          </div>
-        )}
+      <div className="md:hidden sticky top-0 z-50 flex h-16 items-center justify-between bg-slate-950 px-4 text-white">
+        <NavLink
+          to={isStaff ? "/staff/dashboard" : "/dashboard"}
+          className="text-lg font-bold"
+        >
+          DentalCare
+        </NavLink>
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle navigation"
+          className="rounded-lg px-3 py-2 text-xl hover:bg-slate-800"
+        >
+          ☰
+        </button>
       </div>
-    </nav>
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-x-0 top-16 z-40 bg-slate-950 px-5 py-5 shadow-xl">
+          {navigation}
+          <button
+            onClick={handleLogout}
+            className="w-full mt-5 border-t border-slate-800 pt-4 text-left text-sm font-semibold text-red-300"
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+    </>
   );
 }
