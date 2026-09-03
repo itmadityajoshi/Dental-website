@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { doctorName, mediaUrl } from "../../utils/display";
 
 export default function StaffDentists() {
   const [dentists, setDentists] = useState([]);
@@ -239,8 +240,18 @@ export default function StaffDentists() {
               key={dentist.id}
               className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition"
             >
+              {dentist.photo ? (
+                <img
+                  src={mediaUrl(dentist.photo)}
+                  alt={doctorName(dentist.name)}
+                  className="w-full h-40 object-cover rounded-lg mb-4"
+                />
+              ) : null}
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Dr. {dentist.first_name} {dentist.last_name}
+                {doctorName(
+                  dentist.name ||
+                    `${dentist.first_name || ""} ${dentist.last_name || ""}`.trim(),
+                )}
               </h3>
               {dentist.specialization && (
                 <p className="text-sm text-blue-600 mb-3">

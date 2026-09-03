@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { doctorName } from "../../utils/display";
 
 export default function StaffDashboard() {
-  const [appointments, setAppointments] = useState([]);
   const [stats, setStats] = useState({
     total_appointments: 0,
     total_dentists: 0,
@@ -39,11 +39,9 @@ export default function StaffDashboard() {
         // Filter today's appointments
         const today = new Date().toISOString().split("T")[0];
         const today_appointments = appointmentsRes.data.filter(
-          (apt) => apt.appointment_date === today,
+          (apt) => (apt.date || apt.appointment_date) === today,
         );
         setTodayAppointments(today_appointments);
-
-        setAppointments(appointmentsRes.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -109,13 +107,13 @@ export default function StaffDashboard() {
                   todayAppointments.map((apt) => (
                     <tr key={apt.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 text-sm text-gray-900">
-                        {apt.time_slot}
+                        {apt.time || apt.appointment_time || apt.time_slot}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
                         {apt.patient_name || "Patient"}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
-                        {apt.dentist_name || "N/A"}
+                        {doctorName(apt.dentist_name, "N/A")}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
                         {apt.service_name || "N/A"}

@@ -3,6 +3,7 @@ import {
   getAppointments,
   cancelAppointment,
 } from "../services/appointmentService";
+import { doctorName } from "../utils/display";
 
 function AppointmentsPage() {
   const [appointments, setAppointments] = useState([]);
@@ -83,7 +84,9 @@ function AppointmentsPage() {
               >
                 <div>
                   <h2 className="font-bold text-lg">
-                    {appointment.dentist_name || appointment.dentist?.name}
+                    {doctorName(
+                      appointment.dentist_name || appointment.dentist?.name,
+                    )}
                   </h2>
 
                   <p className="text-gray-500">
@@ -93,14 +96,31 @@ function AppointmentsPage() {
                   <p className="mt-2">📅 {appointment.date}</p>
 
                   <p>🕐 {appointment.time}</p>
+
+                  <span
+                    className={`inline-block mt-3 px-3 py-1 rounded-full text-sm font-semibold capitalize ${
+                      appointment.status === "cancelled"
+                        ? "bg-red-100 text-red-800"
+                        : appointment.status === "confirmed"
+                          ? "bg-green-100 text-green-800"
+                          : appointment.status === "completed"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {appointment.status}
+                  </span>
                 </div>
 
-                <button
-                  onClick={() => handleCancel(appointment.id)}
-                  className="border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50"
-                >
-                  Cancel
-                </button>
+                {appointment.status !== "cancelled" &&
+                  appointment.status !== "completed" && (
+                    <button
+                      onClick={() => handleCancel(appointment.id)}
+                      className="border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50"
+                    >
+                      Cancel
+                    </button>
+                  )}
               </div>
             ))}
           </div>

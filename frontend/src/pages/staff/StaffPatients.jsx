@@ -13,7 +13,7 @@ export default function StaffPatients() {
   const fetchPatients = async () => {
     try {
       // Fetch all appointments to get patient info
-      const appointmentsRes = await api.get("appointments/appointments/");
+      const appointmentsRes = await api.get("appointments/");
 
       // Extract unique patients from appointments
       const uniquePatients = {};
@@ -75,7 +75,7 @@ export default function StaffPatients() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900">
-                      {patient.name}
+                      Patient: {patient.name}
                     </h3>
                     <p className="text-sm text-gray-600">{patient.email}</p>
                   </div>

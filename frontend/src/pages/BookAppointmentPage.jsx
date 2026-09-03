@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import TimeSlot from "../components/TimeSlot";
 
 import { getDentists, getAvailableSlots } from "../services/dentistService";
+import api from "../services/api";
 import { createAppointment } from "../services/appointmentService";
+import { doctorName } from "../utils/display";
 
 function BookAppointmentPage() {
   const navigate = useNavigate();
@@ -29,7 +31,10 @@ function BookAppointmentPage() {
       })
       .catch(console.error);
 
-    // Load services from your services endpoint
+    api
+      .get("services/")
+      .then((response) => setServices(response.data))
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -117,7 +122,7 @@ function BookAppointmentPage() {
 
               {dentists.map((item) => (
                 <option key={item.id} value={item.id}>
-                  Dr. {item.name}
+                  {doctorName(item.name)}
                 </option>
               ))}
             </select>

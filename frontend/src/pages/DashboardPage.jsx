@@ -6,6 +6,7 @@ import DentistCard from "../components/DentistCard";
 import { getCurrentUser } from "../services/authService";
 import { getDentists } from "../services/dentistService";
 import { getAppointments } from "../services/appointmentService";
+import { doctorName } from "../utils/display";
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -46,10 +47,19 @@ function DashboardPage() {
     );
   }
 
-  const upcomingAppointment = appointments.find(
-    (appointment) =>
-      appointment.status === "scheduled" || appointment.status === "confirmed",
-  );
+  const today = new Date().toISOString().split("T")[0];
+  const upcomingAppointment = appointments
+    .filter(
+      (appointment) =>
+        appointment.date >= today &&
+        appointment.status !== "cancelled" &&
+        appointment.status !== "completed",
+    )
+    .sort((first, second) =>
+      `${first.date}T${first.time}`.localeCompare(
+        `${second.date}T${second.time}`,
+      ),
+    )[0];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -168,9 +178,10 @@ function DashboardPage() {
                   </p>
 
                   <h3 className="text-xl font-bold text-gray-800 mt-1">
-                    {upcomingAppointment.dentist_name ||
-                      upcomingAppointment.dentist?.name ||
-                      "Dentist"}
+                    {doctorName(
+                      upcomingAppointment.dentist_name ||
+                        upcomingAppointment.dentist?.name,
+                    )}
                   </h3>
 
                   <p className="text-gray-500 mt-1">

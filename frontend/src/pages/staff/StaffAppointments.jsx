@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { doctorName } from "../../utils/display";
 
 export default function StaffAppointments() {
   const [appointments, setAppointments] = useState([]);
@@ -124,11 +125,13 @@ export default function StaffAppointments() {
                       </span>
                     </div>
                     <p className="text-gray-600 text-sm mb-2">
-                      📅 {appointment.appointment_date} at{" "}
-                      {appointment.time_slot}
+                      📅 {appointment.date || appointment.appointment_date} at{" "}
+                      {appointment.time ||
+                        appointment.appointment_time ||
+                        appointment.time_slot}
                     </p>
                     <p className="text-gray-600 text-sm">
-                      🦷 {appointment.dentist_name || "Unassigned"} •{" "}
+                      🦷 {doctorName(appointment.dentist_name, "Unassigned")} •{" "}
                       {appointment.service_name || "N/A"}
                     </p>
                   </div>
@@ -171,14 +174,18 @@ export default function StaffAppointments() {
                 <div>
                   <p className="text-gray-600 text-sm">Date & Time</p>
                   <p className="text-gray-900 font-semibold">
-                    {selectedAppointment.appointment_date} at{" "}
-                    {selectedAppointment.time_slot}
+                    {selectedAppointment.date ||
+                      selectedAppointment.appointment_date}{" "}
+                    at{" "}
+                    {selectedAppointment.time ||
+                      selectedAppointment.appointment_time ||
+                      selectedAppointment.time_slot}
                   </p>
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm">Dentist</p>
                   <p className="text-gray-900 font-semibold">
-                    {selectedAppointment.dentist_name || "Unassigned"}
+                    {doctorName(selectedAppointment.dentist_name, "Unassigned")}
                   </p>
                 </div>
                 <div>

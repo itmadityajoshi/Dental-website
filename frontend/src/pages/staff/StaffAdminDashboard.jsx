@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import { doctorName, mediaUrl } from "../../utils/display";
 
 export default function StaffAdminDashboard() {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("services");
   const [services, setServices] = useState([]);
   const [dentists, setDentists] = useState([]);
@@ -146,6 +146,21 @@ export default function StaffAdminDashboard() {
       }
     }
   };
+
+  const latestAppointment = [...appointments].sort((first, second) => {
+    if (first.created_at && second.created_at) {
+      return new Date(second.created_at) - new Date(first.created_at);
+    }
+    const firstDate = `${first.date || first.appointment_date}T${first.time || first.appointment_time || "00:00"}`;
+    const secondDate = `${second.date || second.appointment_date}T${second.time || second.appointment_time || "00:00"}`;
+    return new Date(secondDate) - new Date(firstDate);
+  })[0];
+
+  const sortedAppointments = [...appointments].sort((first, second) => {
+    const firstDate = `${first.date || first.appointment_date}T${first.time || first.appointment_time || "00:00"}`;
+    const secondDate = `${second.date || second.appointment_date}T${second.time || second.appointment_time || "00:00"}`;
+    return new Date(secondDate) - new Date(firstDate);
+  });
 
   if (loading) {
     return (
@@ -490,11 +505,19 @@ export default function StaffAdminDashboard() {
                     className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition"
                   >
                     <div className="mb-4">
-                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
-                        <span className="text-xl">👨‍⚕️</span>
-                      </div>
+                      {dentist.photo ? (
+                        <img
+                          src={mediaUrl(dentist.photo)}
+                          alt={doctorName(dentist.name)}
+                          className="w-16 h-16 rounded-full object-cover mb-3"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                          <span className="text-xl">👨‍⚕️</span>
+                        </div>
+                      )}
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {dentist.name}
+                        {doctorName(dentist.name)}
                       </h3>
                       {dentist.specialization && (
                         <p className="text-sm text-green-600 font-medium">
@@ -553,6 +576,27 @@ export default function StaffAdminDashboard() {
               All Appointments
             </h2>
 
+            {latestAppointment && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-5 mb-6">
+                <p className="text-sm font-semibold text-green-700 uppercase">
+                  Latest appointment
+                </p>
+                <div className="flex flex-wrap justify-between gap-3 mt-2">
+                  <p className="font-bold text-gray-900">
+                    {latestAppointment.patient_name || "Patient"} with{" "}
+                    {doctorName(latestAppointment.dentist_name)}
+                  </p>
+                  <p className="text-gray-700">
+                    {latestAppointment.date ||
+                      latestAppointment.appointment_date}{" "}
+                    at{" "}
+                    {latestAppointment.time ||
+                      latestAppointment.appointment_time}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               {appointments.length > 0 ? (
                 <div className="overflow-x-auto">
@@ -577,21 +621,20 @@ export default function StaffAdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {appointments.map((apt) => (
+                      {sortedAppointments.map((apt) => (
                         <tr key={apt.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 text-sm text-gray-900">
                             {apt.patient_name || "N/A"}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
-                            {apt.dentist_name || "N/A"}
+                            {doctorName(apt.dentist_name, "N/A")}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
                             {apt.service_name || "N/A"}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
-                            {new Date(
-                              apt.appointment_date + " " + apt.appointment_time,
-                            ).toLocaleString()}
+                            {apt.date || apt.appointment_date} at{" "}
+                            {apt.time || apt.appointment_time}
                           </td>
                           <td className="px-6 py-4 text-sm">
                             <span
