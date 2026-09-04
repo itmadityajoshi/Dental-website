@@ -5,8 +5,8 @@ function TimeSlot({ time, selected, onClick }) {
       onClick={onClick}
       className={`px-5 py-3 rounded-lg border transition ${
         selected
-          ? "bg-blue-600 text-white border-blue-600"
-          : "bg-white text-gray-700 border-gray-300 hover:border-blue-500 hover:text-blue-600"
+          ? "bg-teal-600 text-white border-teal-600"
+          : "bg-white text-slate-700 border-slate-300 hover:border-teal-500 hover:text-teal-700"
       }`}
     >
       {time}

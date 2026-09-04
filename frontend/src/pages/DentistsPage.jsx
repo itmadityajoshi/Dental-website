@@ -24,7 +24,7 @@ function DentistsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-100">
       <main className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-gray-800">Our Dentists</h1>

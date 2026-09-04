@@ -41,8 +41,8 @@ function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">Loading dashboard...</p>
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+        <p className="text-slate-500">Loading dashboard...</p>
       </div>
     );
   }
@@ -62,18 +62,18 @@ function DashboardPage() {
     )[0];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-100">
       <main className="max-w-7xl mx-auto px-6 py-10">
         {/* Welcome */}
 
         <section className="mb-10">
-          <p className="text-blue-600 font-medium">Patient Dashboard</p>
+          <p className="text-teal-700 font-medium">Patient Dashboard</p>
 
-          <h1 className="text-4xl font-bold text-gray-800 mt-1">
+          <h1 className="text-4xl font-bold text-slate-900 mt-1">
             Welcome back, {user?.first_name || user?.email}
           </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-slate-600 mt-2">
             Manage your dental appointments and find the right care for you.
           </p>
         </section>
@@ -85,7 +85,7 @@ function DashboardPage() {
 
           <button
             onClick={() => navigate("/appointments/new")}
-            className="bg-blue-600 text-white rounded-xl p-6 text-left hover:bg-blue-700 transition"
+            className="bg-teal-600 text-white rounded-xl p-6 text-left hover:bg-teal-700 transition"
           >
             <div className="text-3xl mb-4">📅</div>
 
@@ -100,7 +100,7 @@ function DashboardPage() {
 
           <button
             onClick={() => navigate("/appointments")}
-            className="bg-white border border-gray-200 rounded-xl p-6 text-left hover:shadow-md transition"
+            className="bg-white border border-slate-200 rounded-xl p-6 text-left hover:shadow-md transition"
           >
             <div className="text-3xl mb-4">🗓️</div>
 
@@ -115,7 +115,7 @@ function DashboardPage() {
 
           <button
             onClick={() => navigate("/dentists")}
-            className="bg-white border border-gray-200 rounded-xl p-6 text-left hover:shadow-md transition"
+            className="bg-white border border-slate-200 rounded-xl p-6 text-left hover:shadow-md transition"
           >
             <div className="text-3xl mb-4">👨‍⚕️</div>
 
@@ -163,7 +163,7 @@ function DashboardPage() {
 
             <button
               onClick={() => navigate("/appointments")}
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-teal-700 hover:text-teal-800 font-medium"
             >
               View all
             </button>
@@ -173,7 +173,7 @@ function DashboardPage() {
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
                 <div>
-                  <p className="text-sm text-blue-600 font-medium">
+                  <p className="text-sm text-teal-700 font-medium">
                     NEXT VISIT
                   </p>
 
@@ -213,7 +213,7 @@ function DashboardPage() {
                   onClick={() =>
                     navigate(`/appointments/${upcomingAppointment.id}`)
                   }
-                  className="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-5 py-2.5 border border-slate-300 rounded-lg hover:bg-slate-50"
                 >
                   View Details
                 </button>
@@ -233,7 +233,7 @@ function DashboardPage() {
 
               <button
                 onClick={() => navigate("/appointments/new")}
-                className="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700"
+                className="bg-teal-600 text-white px-5 py-2.5 rounded-lg hover:bg-teal-700"
               >
                 Book an Appointment
               </button>
@@ -255,7 +255,7 @@ function DashboardPage() {
 
             <button
               onClick={() => navigate("/dentists")}
-              className="text-blue-600 font-medium"
+              className="text-teal-700 font-medium"
             >
               See all
             </button>

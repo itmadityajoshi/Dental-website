@@ -54,17 +54,17 @@ export default function StaffDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
+          <div className="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-slate-100 p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -76,14 +76,14 @@ export default function StaffDashboard() {
 
         {/* Today's Appointments */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+          <div className="bg-linear-to-r from-slate-950 to-slate-800 px-6 py-4">
             <h2 className="text-xl font-bold text-white">
               Today's Appointments
             </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
                     Time
@@ -105,7 +105,7 @@ export default function StaffDashboard() {
               <tbody className="divide-y divide-gray-200">
                 {todayAppointments.length > 0 ? (
                   todayAppointments.map((apt) => (
-                    <tr key={apt.id} className="hover:bg-gray-50">
+                    <tr key={apt.id} className="hover:bg-slate-50">
                       <td className="px-6 py-4 text-sm text-gray-900">
                         {apt.time || apt.appointment_time || apt.time_slot}
                       </td>
@@ -158,7 +158,7 @@ export default function StaffDashboard() {
                   {stats.total_appointments}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl">
+              <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center text-2xl">
                 📅
               </div>
             </div>

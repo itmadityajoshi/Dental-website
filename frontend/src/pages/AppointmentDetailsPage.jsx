@@ -34,13 +34,13 @@ function AppointmentDetailsPage() {
 
   if (!appointment) {
     return (
-      <main className="min-h-screen bg-gray-50 px-6 py-16 text-center">
+      <main className="min-h-screen bg-slate-100 px-6 py-16 text-center">
         <h1 className="text-2xl font-bold text-gray-900">
           Appointment not found
         </h1>
         <Link
           to="/appointments"
-          className="inline-block mt-4 text-blue-600 font-semibold"
+          className="inline-block mt-4 text-teal-700 font-semibold"
         >
           Back to appointments
         </Link>
@@ -49,15 +49,15 @@ function AppointmentDetailsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 px-6 py-12">
+    <main className="min-h-screen bg-slate-100 px-6 py-12">
       <div className="max-w-2xl mx-auto">
-        <Link to="/appointments" className="text-blue-600 font-semibold">
+        <Link to="/appointments" className="text-teal-700 font-semibold">
           ← My Appointments
         </Link>
         <div className="bg-white border border-gray-200 rounded-2xl p-8 mt-6">
           <div className="flex items-start justify-between gap-4 mb-8">
             <div>
-              <p className="text-sm text-blue-600 font-semibold uppercase">
+              <p className="text-sm text-teal-700 font-semibold uppercase">
                 Appointment details
               </p>
               <h1 className="text-3xl font-bold text-gray-900 mt-1">

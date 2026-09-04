@@ -54,7 +54,7 @@ export default function StaffAppointments() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading appointments...</p>
@@ -64,7 +64,7 @@ export default function StaffAppointments() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-slate-100 p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">
@@ -87,7 +87,7 @@ export default function StaffAppointments() {
                 onClick={() => setFilterStatus(status)}
                 className={`px-4 py-2 rounded-lg font-medium transition capitalize ${
                   filterStatus === status
-                    ? "bg-blue-600 text-white"
+                    ? "bg-teal-600 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -141,7 +141,7 @@ export default function StaffAppointments() {
                         e.stopPropagation();
                         setSelectedAppointment(appointment);
                       }}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                      className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition"
                     >
                       View Details
                     </button>
@@ -224,7 +224,7 @@ export default function StaffAppointments() {
                         "completed",
                       )
                     }
-                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    className="w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition"
                   >
                     Mark as Completed
                   </button>
@@ -252,7 +252,7 @@ export default function StaffAppointments() {
 
               <button
                 onClick={() => setSelectedAppointment(null)}
-                className="w-full mt-4 px-4 py-2 border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition"
+                className="w-full mt-4 px-4 py-2 border border-slate-300 text-slate-900 rounded-lg hover:bg-slate-50 transition"
               >
                 Close
               </button>

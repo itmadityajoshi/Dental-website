@@ -46,7 +46,7 @@ function AppointmentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-100">
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-10">
           <div>
@@ -61,7 +61,7 @@ function AppointmentsPage() {
 
           <a
             href="/appointments/new"
-            className="bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700"
+            className="bg-teal-600 text-white px-5 py-3 rounded-lg hover:bg-teal-700"
           >
             + Book Appointment
           </a>

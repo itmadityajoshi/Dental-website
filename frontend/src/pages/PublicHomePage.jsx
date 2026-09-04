@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import api from "../services/api";
 
 const slides = [
   {
@@ -27,6 +28,7 @@ const slides = [
 
 function PublicHomePage() {
   const [slide, setSlide] = useState(0);
+  const [services, setServices] = useState([]);
 
   useEffect(() => {
     const timer = setInterval(
@@ -36,12 +38,19 @@ function PublicHomePage() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    api
+      .get("services/")
+      .then((response) => setServices(response.data))
+      .catch(console.error);
+  }, []);
+
   const currentSlide = slides[slide];
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <section className="relative overflow-hidden px-6 py-8">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(45,212,191,0.22),_transparent_42%),linear-gradient(135deg,_#0f172a,_#164e63)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(45,212,191,0.22),transparent_42%),linear-gradient(135deg,#0f172a,#164e63)]" />
         <div className="relative max-w-7xl mx-auto">
           <nav className="flex items-center justify-between">
             <Link to="/" className="text-xl font-bold tracking-wide">
@@ -88,13 +97,13 @@ function PublicHomePage() {
                 </Link>
               </div>
             </div>
-            <div className="relative min-h-72 h-[28rem] rounded-3xl overflow-hidden border border-teal-200/20 bg-teal-300/10">
+            <div className="relative min-h-72 h-112 rounded-3xl overflow-hidden border border-teal-200/20 bg-teal-300/10">
               <img
                 src={currentSlide.image}
                 alt="DentalCare clinic"
                 className="absolute inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
               <div className="relative h-full p-8 flex flex-col justify-end">
                 <p className="text-6xl">✦</p>
                 <h2 className="text-2xl font-bold mt-10">
@@ -104,24 +113,6 @@ function PublicHomePage() {
                   Clear appointments, experienced professionals, and a calmer
                   way to care for your smile.
                 </p>
-              </div>
-              <div className="absolute top-1/2 inset-x-4 flex justify-between -translate-y-1/2">
-                <button
-                  onClick={() =>
-                    setSlide((slide - 1 + slides.length) % slides.length)
-                  }
-                  aria-label="Previous slide"
-                  className="w-10 h-10 rounded-full bg-slate-950/60 text-white text-xl hover:bg-slate-950/90"
-                >
-                  ←
-                </button>
-                <button
-                  onClick={() => setSlide((slide + 1) % slides.length)}
-                  aria-label="Next slide"
-                  className="w-10 h-10 rounded-full bg-slate-950/60 text-white text-xl hover:bg-slate-950/90"
-                >
-                  →
-                </button>
               </div>
             </div>
           </div>
@@ -162,16 +153,83 @@ function PublicHomePage() {
           </div>
         </div>
       </section>
-      <section className="bg-slate-100 px-6 py-8 text-slate-700">
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-between gap-4 text-sm font-semibold">
-          <span>125 Main Street, Downtown</span>
-          <a href="tel:+15550123456">+1 (555) 012-3456</a>
-          <Link to="/services" className="text-teal-700">
-            View services
-          </Link>
-          <Link to="/contact" className="text-teal-700">
-            Contact the clinic
-          </Link>
+      <section className="bg-slate-100 px-6 py-20 text-slate-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="max-w-2xl">
+            <p className="text-teal-700 font-bold uppercase tracking-[0.2em] text-sm">
+              Our care
+            </p>
+            <h2 className="text-4xl font-bold mt-3">
+              Services designed around your smile.
+            </h2>
+            <p className="text-slate-600 text-lg mt-4">
+              Explore available treatments before choosing your next visit.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+            {services.map((service) => (
+              <article
+                key={service.id}
+                className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm"
+              >
+                <p className="text-teal-700 font-bold">
+                  {service.duration_minutes} min
+                </p>
+                <h3 className="text-xl font-bold mt-3">{service.name}</h3>
+                <p className="text-slate-600 mt-3 min-h-12">
+                  {service.description ||
+                    "Personalized care from our dental team."}
+                </p>
+              </article>
+            ))}
+          </div>
+          <div className="grid lg:grid-cols-2 gap-12 items-start mt-24 border-t border-slate-200 pt-16">
+            <div>
+              <p className="text-teal-700 font-bold uppercase tracking-[0.2em] text-sm">
+                Visit or call us
+              </p>
+              <h2 className="text-4xl font-bold mt-3">
+                Let’s make your next visit easy.
+              </h2>
+              <p className="text-slate-600 text-lg leading-relaxed mt-5">
+                Our friendly team is ready to answer questions and find a
+                convenient appointment.
+              </p>
+            </div>
+            <div className="bg-slate-950 text-white rounded-2xl p-8 space-y-7">
+              <div>
+                <p className="text-slate-400 text-sm">Clinic location</p>
+                <p className="text-xl font-semibold mt-1">
+                  125 Main Street, Downtown
+                </p>
+                <p className="text-slate-300 mt-1">Open Monday to Saturday</p>
+              </div>
+              <div>
+                <p className="text-slate-400 text-sm">Call us</p>
+                <a
+                  href="tel:+15550123456"
+                  className="text-xl font-semibold mt-1 inline-block text-teal-300"
+                >
+                  +1 (555) 012-3456
+                </a>
+              </div>
+              <div>
+                <p className="text-slate-400 text-sm">Email</p>
+                <a
+                  href="mailto:hello@dentalcare.example"
+                  className="text-lg font-semibold mt-1 inline-block"
+                >
+                  hello@dentalcare.example
+                </a>
+              </div>
+              <Link
+                to="/signup"
+                className="inline-block px-5 py-3 rounded-lg bg-teal-400 text-slate-950 font-bold hover:bg-teal-300"
+              >
+                Request an appointment
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </main>

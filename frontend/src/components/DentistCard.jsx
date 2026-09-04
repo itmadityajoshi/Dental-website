@@ -26,7 +26,7 @@ function DentistCard({ dentist }) {
           {doctorName(dentist.name)}
         </h3>
 
-        <p className="text-blue-600 mt-1">{dentist.specialization}</p>
+        <p className="text-teal-700 mt-1">{dentist.specialization}</p>
 
         <p className="text-gray-500 text-sm mt-3">
           Experienced dental professional dedicated to patient care.
@@ -34,7 +34,7 @@ function DentistCard({ dentist }) {
 
         <button
           onClick={() => navigate(`/dentists/${dentist.id}`)}
-          className="mt-5 w-full py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+          className="mt-5 w-full py-3 rounded-lg bg-teal-600 text-white hover:bg-teal-700"
         >
           View Profile
         </button>

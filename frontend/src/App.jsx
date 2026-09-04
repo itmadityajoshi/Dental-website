@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import Navbar from "./components/Navbar";
@@ -14,8 +20,6 @@ import AppointmentsPage from "./pages/AppointmentsPage";
 import BookAppointmentPage from "./pages/BookAppointmentPage";
 import AppointmentDetailsPage from "./pages/AppointmentDetailsPage";
 import PublicHomePage from "./pages/PublicHomePage";
-import PublicServicesPage from "./pages/PublicServicesPage";
-import PublicContactPage from "./pages/PublicContactPage";
 
 // Staff Pages
 import StaffDashboard from "./pages/staff/StaffDashboard";
@@ -28,18 +32,18 @@ import { useAuth } from "./contexts/AuthContext";
 
 function AppContent() {
   const { user } = useAuth();
+  const location = useLocation();
+  const isPublicHome = location.pathname === "/";
 
   return (
     <>
-      <Navbar />
-      <div className={user ? "md:pl-64" : ""}>
+      {!isPublicHome && <Navbar />}
+      <div className={user && !isPublicHome ? "md:pl-64" : ""}>
         <Routes>
           {/* Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/" element={<PublicHomePage />} />
-          <Route path="/services" element={<PublicServicesPage />} />
-          <Route path="/contact" element={<PublicContactPage />} />
 
           {/* Patient Routes */}
           <Route

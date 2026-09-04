@@ -80,7 +80,7 @@ export default function StaffServices() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading services...</p>
@@ -90,7 +90,7 @@ export default function StaffServices() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-slate-100 p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">
@@ -114,7 +114,7 @@ export default function StaffServices() {
               });
               setError(null);
             }}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+            className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-semibold"
           >
             {showForm ? "Cancel" : "+ Add Service"}
           </button>
@@ -198,7 +198,7 @@ export default function StaffServices() {
 
               <button
                 type="submit"
-                className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                className="w-full px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-semibold"
               >
                 {editingId ? "Update Service" : "Add Service"}
               </button>
@@ -226,7 +226,7 @@ export default function StaffServices() {
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-blue-600">
+                    <p className="text-2xl font-bold text-teal-700">
                       ${parseFloat(service.price || 0).toFixed(2)}
                     </p>
                     <p className="text-sm text-gray-600">
@@ -237,7 +237,7 @@ export default function StaffServices() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(service)}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold"
+                    className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition text-sm font-semibold"
                   >
                     Edit
                   </button>
@@ -257,7 +257,7 @@ export default function StaffServices() {
               </p>
               <button
                 onClick={() => setShowForm(true)}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-semibold"
               >
                 Add First Service
               </button>

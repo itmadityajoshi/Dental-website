@@ -70,7 +70,7 @@ export default function StaffAdminDashboard() {
       } else {
         await api.post("services/", serviceFormData);
       }
-      fetchAllData();
+      await fetchAllData();
       setShowServiceForm(false);
       setEditingService(null);
       setServiceFormData({
@@ -94,7 +94,7 @@ export default function StaffAdminDashboard() {
     if (window.confirm("Delete this service?")) {
       try {
         await api.delete(`services/${id}/`);
-        fetchAllData();
+        await fetchAllData();
       } catch (err) {
         setError("Failed to delete service");
       }
@@ -115,7 +115,7 @@ export default function StaffAdminDashboard() {
       } else {
         await api.post("dentists/", dentistFormData);
       }
-      fetchAllData();
+      await fetchAllData();
       setShowDentistForm(false);
       setEditingDentist(null);
       setDentistFormData({
@@ -140,7 +140,7 @@ export default function StaffAdminDashboard() {
     if (window.confirm("Delete this dentist?")) {
       try {
         await api.delete(`dentists/${id}/`);
-        fetchAllData();
+        await fetchAllData();
       } catch (err) {
         setError("Failed to delete dentist");
       }
@@ -164,7 +164,7 @@ export default function StaffAdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading admin dashboard...</p>
@@ -174,7 +174,7 @@ export default function StaffAdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-100">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-8">
@@ -358,7 +358,7 @@ export default function StaffAdminDashboard() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEditService(service)}
-                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold"
+                        className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition text-sm font-semibold"
                       >
                         Edit
                       </button>
@@ -530,7 +530,7 @@ export default function StaffAdminDashboard() {
                         </p>
                       )}
                     </div>
-                    <div className="bg-gray-50 p-3 rounded mb-4">
+                    <div className="bg-slate-50 p-3 rounded mb-4">
                       <p className="text-sm text-gray-600">
                         <span className="font-semibold">Hours:</span>{" "}
                         {dentist.working_start} - {dentist.working_end}
@@ -539,7 +539,7 @@ export default function StaffAdminDashboard() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEditDentist(dentist)}
-                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold"
+                        className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition text-sm font-semibold"
                       >
                         Edit
                       </button>
@@ -601,7 +601,7 @@ export default function StaffAdminDashboard() {
               {appointments.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-50 border-b border-gray-200">
+                    <thead className="bg-slate-50 border-b border-slate-200">
                       <tr>
                         <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
                           Patient
@@ -622,7 +622,7 @@ export default function StaffAdminDashboard() {
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                       {sortedAppointments.map((apt) => (
-                        <tr key={apt.id} className="hover:bg-gray-50">
+                        <tr key={apt.id} className="hover:bg-slate-50">
                           <td className="px-6 py-4 text-sm text-gray-900">
                             {apt.patient_name || "N/A"}
                           </td>
