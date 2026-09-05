@@ -12,7 +12,7 @@ export const login = async (email, password) => {
     throw new Error("No authentication token received.");
   }
 
-  localStorage.setItem("token", token);
+  sessionStorage.setItem("token", token);
 
   return response.data;
 };
@@ -30,9 +30,9 @@ export const getCurrentUser = async () => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("token");
+  sessionStorage.removeItem("token");
 };
 
 export const isAuthenticated = () => {
-  return !!localStorage.getItem("token");
+  return !!sessionStorage.getItem("token");
 };

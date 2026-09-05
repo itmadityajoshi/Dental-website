@@ -24,6 +24,16 @@ function AppointmentsPage() {
     loadAppointments();
   }, []);
 
+  const sortedAppointments = [...appointments].sort((first, second) => {
+    const statusOrder = {
+      pending: 0,
+      confirmed: 1,
+      completed: 2,
+      cancelled: 3,
+    };
+    return (statusOrder[first.status] ?? 4) - (statusOrder[second.status] ?? 4);
+  });
+
   const handleCancel = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to cancel this appointment?",
@@ -77,7 +87,7 @@ function AppointmentsPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {appointments.map((appointment) => (
+            {sortedAppointments.map((appointment) => (
               <div
                 key={appointment.id}
                 className="bg-white border border-gray-200 rounded-xl p-6 flex justify-between items-center"

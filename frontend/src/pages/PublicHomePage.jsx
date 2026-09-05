@@ -128,7 +128,7 @@ function PublicHomePage() {
           </div>
         </div>
       </section>
-      <section className="bg-white text-slate-900 px-6 py-16">
+      <section className="bg-slate-100 text-slate-900 px-6 py-16">
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
           <div>
             <p className="text-teal-600 font-bold text-2xl">01</p>
@@ -200,17 +200,17 @@ function PublicHomePage() {
               <div>
                 <p className="text-slate-400 text-sm">Clinic location</p>
                 <p className="text-xl font-semibold mt-1">
-                  125 Main Street, Downtown
+                  Balkumari-07, Lalitpur
                 </p>
                 <p className="text-slate-300 mt-1">Open Monday to Saturday</p>
               </div>
               <div>
                 <p className="text-slate-400 text-sm">Call us</p>
                 <a
-                  href="tel:+15550123456"
+                  href="tel:+9779860709627"
                   className="text-xl font-semibold mt-1 inline-block text-teal-300"
                 >
-                  +1 (555) 012-3456
+                  +977-9860709627
                 </a>
               </div>
               <div>
@@ -219,7 +219,7 @@ function PublicHomePage() {
                   href="mailto:hello@dentalcare.example"
                   className="text-lg font-semibold mt-1 inline-block"
                 >
-                  hello@dentalcare.example
+                  dental@care.com
                 </a>
               </div>
               <Link
