@@ -56,3 +56,31 @@ def cancel_appointment(request,pk):
     appointment.save()
     serializer = AppointmentSerializer(appointment)
     return Response(serializer.data)
+
+
+@api_view(["PATCH", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
+def appointment_detail(request, pk):
+    if not request.user.is_staff:
+        return Response(
+            {"detail": "Only staff can manage appointment status."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    appointment = get_object_or_404(Appointment, pk=pk)
+
+    if request.method == "DELETE":
+        appointment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    new_status = request.data.get("status")
+    valid_statuses = {choice[0] for choice in Appointment.STATUS_CHOICE}
+    if new_status not in valid_statuses:
+        return Response(
+            {"status": "Use pending, confirmed, cancelled, or completed."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    appointment.status = new_status
+    appointment.save(update_fields=["status"])
+    return Response(AppointmentSerializer(appointment).data)

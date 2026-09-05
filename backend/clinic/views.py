@@ -38,11 +38,11 @@ def dentist_detail(request, pk):
         serializer = DentistSerializer(dentist)
         return Response(serializer.data)
 
-    if request.user.is_authenticated or not request.user.is_staff:
+    if not request.user.is_authenticated or not request.user.is_staff:
         return Response({"detail":"Only staff can modify dentists."}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == "PUT":
-        serializer = DentistSerializer(dentist, many=True)
+        serializer = DentistSerializer(dentist, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
