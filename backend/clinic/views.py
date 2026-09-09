@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import Dentist, Service
 from .serializers import DentistSerializer, ServiceSerializer
 from datetime import datetime, timedelta
+from django.utils import timezone
 from appointments.models import Appointment
 
 # Create your views here.
@@ -107,7 +108,24 @@ def available_slots(request, pk):
     if not date_str:
         return Response({"detail": "A 'date' query parameter is required, e.g. ?date=2026-09-01"}, status=status.HTTP_400_BAD_REQUEST)
 
-    booked = Appointment.objects.filter(dentist=dentist, date=date_str).exclude(status='cancelled')
+    try:
+        requested_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return Response({"detail": "Use a valid date in YYYY-MM-DD format."}, status=status.HTTP_400_BAD_REQUEST)
+
+    if dentist.working_start >= dentist.working_end:
+        return Response({"detail": "The dentist's working hours are not configured correctly."}, status=status.HTTP_400_BAD_REQUEST)
+
+    service_id = request.query_params.get('service_id')
+    slot_length = timedelta(minutes=30)
+    if service_id:
+        try:
+            service = Service.objects.get(pk=service_id)
+        except (Service.DoesNotExist, ValueError):
+            return Response({"detail": "Service not found."}, status=status.HTTP_404_NOT_FOUND)
+        slot_length = timedelta(minutes=service.duration_minutes)
+
+    booked = Appointment.objects.filter(dentist=dentist, date=requested_date).exclude(status='cancelled')
 
     booked_ranges = []
     for appt in booked:
@@ -117,11 +135,13 @@ def available_slots(request, pk):
         booked_ranges.append((start_dt, end_dt))
 
     slots = []
-    slot_length = timedelta(minutes=30)
-    current = datetime.combine(datetime.strptime(date_str, '%Y-%m-%d').date(), dentist.working_start)
-    end_of_day = datetime.combine(datetime.strptime(date_str, '%Y-%m-%d').date(), dentist.working_end)
+    current = datetime.combine(requested_date, dentist.working_start)
+    end_of_day = datetime.combine(requested_date, dentist.working_end)
 
-    while current < end_of_day:
+    while current + slot_length <= end_of_day:
+        if requested_date == timezone.localdate() and current.time() <= timezone.localtime().time():
+            current += timedelta(minutes=30)
+            continue
         slot_end = current + slot_length
         overlaps = any(current < b_end and slot_end > b_start for b_start, b_end in booked_ranges)
         if not overlaps:

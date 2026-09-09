@@ -14,3 +14,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("AN account with this email already exists")
         return value
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'is_staff']
+        read_only_fields = ['id', 'email', 'is_staff']

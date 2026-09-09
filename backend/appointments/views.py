@@ -6,6 +6,9 @@ from rest_framework import status
 from .models import Appointment
 from .serializers import AppointmentSerializer
 from django.core.mail import send_mail
+from django.conf import settings
+from django.db import transaction
+from clinic.models import Dentist
 
 # Create your views here.
 
@@ -24,33 +27,37 @@ def appointment_list(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def appointment_create(request):
-    serializer = AppointmentSerializer(data=request.data)
-    if serializer.is_valid():
-        appointment =  serializer.save(patient=request.user)
+    with transaction.atomic():
+        try:
+            Dentist.objects.select_for_update().get(pk=request.data.get('dentist'))
+        except (Dentist.DoesNotExist, TypeError, ValueError):
+            pass
 
-        send_mail(
-            subject="Appointment Confirmation - Dental Clinic",
-            message=f"Hi {request.user.first_name}, your appointment with DR. {appointment.dentist.name} on {appointment.date} at {appointment.time} has been booked and is pending confirmation.",
-            from_email='noreply@dentalsite.com',
-            recipient_list=[request.user.email],
-        )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = AppointmentSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        appointment = serializer.save(patient=request.user)
+
+    send_mail(
+        subject="Appointment Confirmation - Dental Clinic",
+        message=f"Hi {request.user.first_name}, your appointment with DR. {appointment.dentist.name} on {appointment.date} at {appointment.time} has been booked and is pending confirmation.",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[request.user.email],
+    )
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET'])
+@api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def cancel_appointment(request,pk):
-    try:
-        appointment = get_object_or_404(Appointment, pk=pk)
-    except Appointment.DoesNotExist:
-        return Response({"detail": "Appointment not found."}, status=status.HTTP_404_NOT_FOUND)
+    appointment = get_object_or_404(Appointment, pk=pk)
 
     if appointment.patient != request.user and not request.user.is_staff:
         return Response({"detail":"You do not have permission to cancel this appointment."}, status=status.HTTP_403_FORBIDDEN)
 
     if appointment.status == "completed":
-        return Response({"detail":"Cannot cancel a completed appointment."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail":"Cannot cancel a completed appointment."}, status=status.HTTP_400_BAD_REQUEST)
 
     appointment.status = 'cancelled'
     appointment.save()

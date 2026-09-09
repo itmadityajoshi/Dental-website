@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.utils import timezone
+from datetime import datetime, timedelta
 from .models import Appointment
 from clinic.serializers import DentistSerializer, ServiceSerializer
 
@@ -30,17 +31,40 @@ class AppointmentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Appointment date cannot be in the past. ")
         return value
 
-    def validate(self, data):  #this validation fun controls all the cancelled appointment as it takes all the data in dic form and compare to for the empty solts so the previous booked date are not occupied.
+    def validate(self, data):
         dentist = data.get('dentist')
         date = data.get('date')
         time = data.get('time')
 
+        if not dentist or not date or not time:
+            return data
+
+        if dentist.working_start >= dentist.working_end:
+            raise serializers.ValidationError("The dentist's working hours are not configured correctly.")
+
+        if time < dentist.working_start or time >= dentist.working_end:
+            raise serializers.ValidationError("Appointment time must be within the dentist's working hours.")
+
+        if date == timezone.localdate() and time <= timezone.localtime().time().replace(microsecond=0):
+            raise serializers.ValidationError("Appointment time must be in the future.")
+
+        duration = data.get('service').duration_minutes if data.get('service') else 30
+        appointment_start = datetime.combine(date, time)
+        appointment_end = appointment_start + timedelta(minutes=duration)
+        working_end = datetime.combine(date, dentist.working_end)
+        if appointment_end > working_end:
+            raise serializers.ValidationError("The appointment must finish within the dentist's working hours.")
+
         conflict = Appointment.objects.filter(
-            dentist = dentist,
-            date =date,
-            time=time
+            dentist=dentist,
+            date=date,
         ).exclude(status='cancelled')
 
-        if conflict.exists():
-            raise serializers.ValidationError("This dentist is already booked at that date.")
+        for existing in conflict:
+            existing_duration = existing.service.duration_minutes if existing.service else 30
+            existing_start = datetime.combine(existing.date, existing.time)
+            existing_end = existing_start + timedelta(minutes=existing_duration)
+            if appointment_start < existing_end and appointment_end > existing_start:
+                raise serializers.ValidationError("This dentist is already booked during that time.")
+
         return data

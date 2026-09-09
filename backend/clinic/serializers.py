@@ -10,3 +10,8 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = ['id','name','description','duration_minutes','price']
+
+    def validate_duration_minutes(self, value):
+        if value < 1:
+            raise serializers.ValidationError("Duration must be at least one minute.")
+        return value

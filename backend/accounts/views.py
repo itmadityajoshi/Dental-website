@@ -1,9 +1,10 @@
+import os
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import RegisterSerializer
+from .serializers import ProfileSerializer, RegisterSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from .models import User
@@ -11,15 +12,25 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from rest_framework.decorators import api_view, throttle_classes
 from .authentication import LoginRateThrottle
 
 # Create your views here.
 
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def get_user(request):
     user = request.user
+    if request.method == 'PATCH':
+        serializer = ProfileSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     return Response({
         "id": user.id,
         "email": user.email,
@@ -51,6 +62,13 @@ def login (request):
     return Response({"token": token.key})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    Token.objects.filter(user=request.user).delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 token_generator = PasswordResetTokenGenerator()
 
 @api_view(['POST'])
@@ -63,12 +81,13 @@ def request_password_reset(request):
 
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = token_generator.make_token(user)
-    reset_link = f"http://127.0.0.1:8000/api/accounts/reset-password-confirm/?uid={uid}&token={token}"
+    reset_url = os.getenv('PASSWORD_RESET_URL', 'http://localhost:5173/reset-password')
+    reset_link = f"{reset_url}?uid={uid}&token={token}"
 
     send_mail(
         subject="Password Reset - Dental Clinic",
         message=f"Click here to reset your password: {reset_link}",
-        from_email='noreply@dentalsite.com',
+        from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[email],
     )
 
@@ -93,10 +112,13 @@ def reset_password_confirm(request):
     if not token_generator.check_token(user, token):
         return Response({"detail": "This reset link is invalid or has expired."}, status=status.HTTP_400_BAD_REQUEST)
 
-    if len(new_password) < 8:
-        return Response({"detail": "Password must be at least 8 characters."}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        validate_password(new_password, user)
+    except ValidationError as error:
+        return Response({"new_password": list(error.messages)}, status=status.HTTP_400_BAD_REQUEST)
 
     user.set_password(new_password)
     user.save()
+    Token.objects.filter(user=user).delete()
 
     return Response({"detail": "Password has been reset successfully."})

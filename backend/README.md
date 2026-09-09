@@ -62,10 +62,11 @@ Create a `.env` file in the backend folder:
 
 ```
 DEBUG=True
-SECRET_KEY=django-insecure-your-secret-key-here
+SECRET_KEY=replace-this-in-production
 ALLOWED_HOSTS=localhost,127.0.0.1
 CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
-DATABASE_URL=sqlite:///db.sqlite3
+DB_NAME=
+PASSWORD_RESET_URL=http://localhost:5173/reset-password
 ```
 
 ### 4. Run Migrations
@@ -102,8 +103,8 @@ User authentication and profile management.
 
 - `POST /api/accounts/login/` - User login
 - `POST /api/accounts/register/` - User registration
-- `GET /api/accounts/profile/` - Get authenticated user's profile
-- `PUT /api/accounts/profile/` - Update user profile
+- `GET /api/accounts/user/` - Get authenticated user's profile
+- `PATCH /api/accounts/user/` - Update first and last name
 - `POST /api/accounts/logout/` - Logout user
 
 **Key Files:**
@@ -127,6 +128,7 @@ Dentist and clinic information management.
 - `POST /api/clinic/dentists/` - Create dentist (admin only)
 - `PUT /api/clinic/dentists/{id}/` - Update dentist (admin only)
 - `DELETE /api/clinic/dentists/{id}/` - Delete dentist (admin only)
+- `GET /api/dentists/{id}/available-slots/?date=YYYY-MM-DD` - List available slots
 
 **Key Files:**
 
@@ -145,10 +147,10 @@ Appointment booking and management.
 **Endpoints:**
 
 - `GET /api/appointments/` - List user's appointments
-- `POST /api/appointments/` - Create appointment
-- `GET /api/appointments/{id}/` - Get appointment details
-- `PUT /api/appointments/{id}/` - Update appointment
-- `DELETE /api/appointments/{id}/` - Delete appointment
+- `POST /api/appointments/create/` - Create appointment
+- `PATCH /api/appointments/{id}/cancel/` - Cancel an appointment
+- `PATCH /api/appointments/{id}/` - Staff updates appointment status
+- `DELETE /api/appointments/{id}/` - Staff deletes an appointment
 
 **Key Files:**
 
@@ -211,7 +213,7 @@ curl -X POST http://localhost:8000/api/accounts/login/ \
 2. Use token in headers:
 
 ```bash
-curl -H "Authorization: Bearer <token>" \
+curl -H "Authorization: Token <token>" \
   http://localhost:8000/api/appointments/
 ```
 
