@@ -8,13 +8,12 @@ export default function StaffDentists() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    name: "",
     specialization: "",
-    phone_number: "",
-    email: "",
+    bio: "",
     working_start: "09:00",
     working_end: "17:00",
+    photo: null,
   });
 
   useEffect(() => {
@@ -40,33 +39,55 @@ export default function StaffDentists() {
     }));
   };
 
+  const handlePhotoChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      photo: e.target.files[0] || null,
+    }));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      specialization: "",
+      bio: "",
+      working_start: "09:00",
+      working_end: "17:00",
+      photo: null,
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== null && value !== "") payload.append(key, value);
+      });
+
       if (editingId) {
-        await api.put(`dentists/${editingId}/`, formData);
+        await api.put(`dentists/${editingId}/`, payload);
       } else {
-        await api.post("dentists/", formData);
+        await api.post("dentists/", payload);
       }
       fetchDentists();
       setShowForm(false);
       setEditingId(null);
-      setFormData({
-        first_name: "",
-        last_name: "",
-        specialization: "",
-        phone_number: "",
-        email: "",
-        working_start: "09:00",
-        working_end: "17:00",
-      });
+      resetForm();
     } catch (error) {
       console.error("Error saving dentist:", error);
     }
   };
 
   const handleEdit = (dentist) => {
-    setFormData(dentist);
+    setFormData({
+      name: dentist.name || "",
+      specialization: dentist.specialization || "",
+      bio: dentist.bio || "",
+      working_start: dentist.working_start || "09:00",
+      working_end: dentist.working_end || "17:00",
+      photo: null,
+    });
     setEditingId(dentist.id);
     setShowForm(true);
   };
@@ -110,15 +131,7 @@ export default function StaffDentists() {
             onClick={() => {
               setShowForm(!showForm);
               setEditingId(null);
-              setFormData({
-                first_name: "",
-                last_name: "",
-                specialization: "",
-                phone_number: "",
-                email: "",
-                working_start: "09:00",
-                working_end: "17:00",
-              });
+              resetForm();
             }}
             className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-semibold"
           >
@@ -136,25 +149,12 @@ export default function StaffDentists() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name
+                    Dentist Name
                   </label>
                   <input
                     type="text"
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    value={formData.last_name}
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -175,29 +175,28 @@ export default function StaffDentists() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
+                    Profile Photo
                   </label>
                   <input
-                    type="tel"
-                    name="phone_number"
-                    value={formData.phone_number}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    type="file"
+                    name="photo"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   />
                 </div>
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
+                    Biography
                   </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                  <textarea
+                    name="bio"
+                    value={formData.bio}
                     onChange={handleInputChange}
+                    rows="3"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
-                <div></div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Working Start Time
@@ -259,8 +258,6 @@ export default function StaffDentists() {
                 </p>
               )}
               <div className="space-y-2 mb-4 text-sm text-gray-600">
-                {dentist.phone_number && <p>📞 {dentist.phone_number}</p>}
-                {dentist.email && <p>✉️ {dentist.email}</p>}
                 <p>
                   ⏰ {dentist.working_start} - {dentist.working_end}
                 </p>

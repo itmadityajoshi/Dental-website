@@ -12,7 +12,7 @@ export const createAppointment = async (data) => {
 };
 
 export const cancelAppointment = async (id) => {
-  const response = await api.get(`appointments/${id}/cancel/`);
+  const response = await api.patch(`appointments/${id}/cancel/`);
 
   return response.data;
 };

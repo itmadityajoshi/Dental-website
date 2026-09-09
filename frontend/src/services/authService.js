@@ -29,8 +29,18 @@ export const getCurrentUser = async () => {
   return response.data;
 };
 
-export const logout = () => {
-  sessionStorage.removeItem("token");
+export const updateProfile = async (profileData) => {
+  const response = await api.patch("accounts/user/", profileData);
+
+  return response.data;
+};
+
+export const logout = async () => {
+  try {
+    await api.post("accounts/logout/");
+  } finally {
+    sessionStorage.removeItem("token");
+  }
 };
 
 export const isAuthenticated = () => {
