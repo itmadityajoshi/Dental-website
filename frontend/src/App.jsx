@@ -33,12 +33,16 @@ import { useAuth } from "./contexts/AuthContext";
 function AppContent() {
   const { user } = useAuth();
   const location = useLocation();
-  const isPublicRoute = ["/", "/login", "/signup"].includes(location.pathname);
+  const isPublicRoute = location.pathname === "/";
+  const isWorkspaceRoute =
+    user &&
+    !isPublicRoute &&
+    !["/login", "/signup"].includes(location.pathname);
 
   return (
     <>
       {!isPublicRoute && <Navbar />}
-      <div className={user && !isPublicRoute ? "md:pl-64" : ""}>
+      <div className={isWorkspaceRoute ? "md:pl-64" : ""}>
         <Routes>
           {/* Auth Routes */}
           <Route path="/login" element={<LoginPage />} />

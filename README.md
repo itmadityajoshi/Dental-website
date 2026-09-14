@@ -135,7 +135,7 @@ http://localhost:8000/api
 Include token in header:
 
 ```
-Authorization: Bearer <token>
+Authorization: Token <token>
 ```
 
 ### Main Endpoints
@@ -144,21 +144,24 @@ Authorization: Bearer <token>
 
 - `POST /accounts/login/` - User login
 - `POST /accounts/register/` - User registration
-- `GET /accounts/profile/` - Get user profile
-- `PUT /accounts/profile/` - Update profile
+- `GET /accounts/user/` - Get user profile
+- `PATCH /accounts/user/` - Update first and last name
+- `POST /accounts/logout/` - Revoke the current token
 
 **Clinic:**
 
-- `GET /clinic/dentists/` - List all dentists
-- `GET /clinic/dentists/{id}/` - Get dentist details
+- `GET /dentists/` - List all dentists
+- `GET /dentists/{id}/` - Get dentist details
+- `GET /dentists/{id}/available-slots/?date=YYYY-MM-DD` - List available slots
+- `GET /services/` - List services
 
 **Appointments:**
 
 - `GET /appointments/` - List user's appointments
-- `POST /appointments/` - Create appointment
-- `GET /appointments/{id}/` - Get appointment details
-- `PUT /appointments/{id}/` - Update appointment
-- `DELETE /appointments/{id}/` - Delete appointment
+- `POST /appointments/create/` - Create appointment
+- `PATCH /appointments/{id}/cancel/` - Cancel an appointment
+- `PATCH /appointments/{id}/` - Staff updates appointment status
+- `DELETE /appointments/{id}/` - Staff deletes an appointment
 
 **Dashboard:**
 

@@ -45,61 +45,39 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <main className="min-h-[calc(100vh-4rem)] bg-slate-100 px-6 py-10 text-slate-900 sm:py-16">
       {/* Left */}
 
-      <div className="hidden lg:flex lg:w-1/2 bg-blue-600 text-white p-16 flex-col justify-between">
+      <div className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl lg:grid-cols-[0.9fr_1.1fr]">
+        <section className="relative hidden overflow-hidden bg-slate-950 p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl">
-              🦷
-            </div>
-
-            <span className="text-2xl font-bold">DentalCare</span>
-          </div>
-
-          <div className="mt-24 max-w-lg">
-            <p className="text-blue-100 font-medium mb-4">
-              YOUR SMILE. OUR PRIORITY.
-            </p>
-
-            <h1 className="text-5xl font-bold leading-tight">
-              Modern dental care made simple.
-            </h1>
-
-            <p className="text-blue-100 text-lg mt-6 leading-relaxed">
-              Find trusted dentists, book appointments, and manage your dental
-              care from one place.
-            </p>
-          </div>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-teal-300">Welcome back</p>
+          <h1 className="mt-8 text-5xl font-bold leading-tight">A healthier smile is one visit away.</h1>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-slate-300">Sign in to manage your appointments, meet your care team, and keep your next visit on track.</p>
         </div>
 
-        <p className="text-blue-200 text-sm">
-          Professional dental care for every smile.
-        </p>
-      </div>
+        <p className="border-t border-slate-700 pt-6 text-sm text-slate-400">Personal care. Clear choices. Better visits.</p>
+        </section>
 
       {/* Right */}
 
-      <div className="flex-1 flex items-center justify-center p-6">
+      <section className="flex items-center justify-center p-7 sm:p-12">
         <div className="w-full max-w-md">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
-
-            <p className="text-gray-500 mt-2">
-              Sign in to manage your appointments.
-            </p>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-teal-700">Patient portal</p>
+            <h2 className="mt-3 text-3xl font-bold text-slate-950">Sign in to DentalCare</h2>
+            <p className="mt-2 text-slate-500">Manage your appointments from one calm, simple place.</p>
           </div>
 
           {error && (
-            <div className="mb-5 p-4 bg-red-50 border border-red-100 text-red-600 rounded-lg">
+            <div className="mb-5 rounded-xl border border-red-100 bg-red-50 p-4 text-red-700">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Email address
               </label>
 
@@ -109,12 +87,12 @@ function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="you@example.com"
-                className="w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none"
+                className="w-full rounded-xl border border-slate-300 px-4 py-3.5 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-100"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Password
               </label>
 
@@ -123,29 +101,31 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="••••••••"
-                className="w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none"
+                placeholder="Enter your password"
+                className="w-full rounded-xl border border-slate-300 px-4 py-3.5 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-100"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+              className="w-full rounded-xl bg-teal-600 py-3.5 font-bold text-white transition hover:bg-teal-700 disabled:opacity-50"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          <p className="text-center text-gray-500 mt-8">
+          <p className="mt-8 text-center text-slate-500">
             Don't have an account?
-            <Link to="/signup" className="text-blue-600 font-semibold ml-1">
+            <Link to="/signup" className="ml-1 font-bold text-teal-700 hover:text-teal-800">
               Create account
             </Link>
           </p>
         </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 

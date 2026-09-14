@@ -23,7 +23,40 @@ export default function Navbar() {
   const { user, userRole, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 text-white backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+          <NavLink to="/" className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-400 text-lg font-bold text-slate-950">
+              ✦
+            </span>
+            <span className="text-lg font-bold tracking-wide">DentalCare</span>
+          </NavLink>
+          <nav className="flex items-center gap-2 sm:gap-5">
+            <NavLink
+              to="/"
+              className="hidden text-sm font-semibold text-slate-300 transition hover:text-white sm:block"
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/appointments/new"
+              className="text-sm font-semibold text-slate-300 transition hover:text-white"
+            >
+              Book your visit
+            </NavLink>
+            <NavLink
+              to="/login"
+              className="rounded-lg bg-teal-400 px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-teal-300"
+            >
+              Sign in
+            </NavLink>
+          </nav>
+        </div>
+      </header>
+    );
+  }
 
   const isStaff = userRole === "staff";
   const links = isStaff ? staffLinks : patientLinks;
