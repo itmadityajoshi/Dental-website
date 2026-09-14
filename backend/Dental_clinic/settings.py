@@ -55,9 +55,15 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:3000,http://localhost:5173,https://dental-website-git-main-itmadityajoshis-projects.vercel.app",
+        "http://localhost:3000," 
+        "http://localhost:5173," 
+        "https://dental-website-eta-eosin.vercel.app",
     ).split(",")
     if origin.strip()
+]
+
+CSRF_TRUSTED_ORIGINS =[
+    "https://dental-website-eta-eosin.vercel.app"
 ]
 
 ROOT_URLCONF = "Dental_clinic.urls"
