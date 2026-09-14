@@ -1,7 +1,7 @@
 import api from "./api";
 
 export const getDentists = async () => {
-  const response = await api.get("dentists/");
+  const response = await api.get("/api/dentists/");
   return response.data;
 };
 
