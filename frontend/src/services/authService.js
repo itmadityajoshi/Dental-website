@@ -1,7 +1,7 @@
 import api from "./api";
 
 export const login = async (email, password) => {
-  const response = await api.post("/api/accounts/login/", {
+  const response = await api.post("/accounts/login/", {
     email,
     password,
   });
@@ -18,26 +18,26 @@ export const login = async (email, password) => {
 };
 
 export const register = async (userData) => {
-  const response = await api.post("/api/accounts/register/", userData);
+  const response = await api.post("/accounts/register/", userData);
 
   return response.data;
 };
 
 export const getCurrentUser = async () => {
-  const response = await api.get("/api/accounts/user/");
+  const response = await api.get("/accounts/user/");
 
   return response.data;
 };
 
 export const updateProfile = async (profileData) => {
-  const response = await api.patch("/api/accounts/user/", profileData);
+  const response = await api.patch("/accounts/user/", profileData);
 
   return response.data;
 };
 
 export const logout = async () => {
   try {
-    await api.post("/api/accounts/logout/");
+    await api.post("/accounts/logout/");
   } finally {
     sessionStorage.removeItem("token");
   }
