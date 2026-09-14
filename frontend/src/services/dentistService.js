@@ -6,7 +6,7 @@ export const getDentists = async () => {
 };
 
 export const getDentist = async (id) => {
-  const response = await api.get(`dentists/${id}/`);
+  const response = await api.get(`/api/dentists/${id}/`);
   return response.data;
 };
 
