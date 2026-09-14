@@ -16,17 +16,17 @@ export default function StaffDashboard() {
     const fetchData = async () => {
       try {
         // Fetch all appointments
-        const appointmentsRes = await api.get("appointments/");
+        const appointmentsRes = await api.get("/appointments/");
 
         // Fetch dentists
-        const dentistsRes = await api.get("dentists/");
+        const dentistsRes = await api.get("/dentists/");
 
         // Fetch services
-        const servicesRes = await api.get("services/");
+        const servicesRes = await api.get("/services/");
 
         // Fetch all patients (assuming this endpoint exists)
         const patientsRes = await api
-          .get("accounts/patients/")
+          .get("/accounts/patients/")
           .catch(() => ({ data: [] }));
 
         setStats({

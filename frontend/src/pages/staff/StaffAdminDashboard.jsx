@@ -41,9 +41,9 @@ export default function StaffAdminDashboard() {
     setError(null);
     try {
       const [servicesRes, dentistsRes, appointmentsRes] = await Promise.all([
-        api.get("services/"),
-        api.get("dentists/"),
-        api.get("appointments/"),
+        api.get("/services/"),
+        api.get("/dentists/"),
+        api.get("/appointments/"),
       ]);
       setServices(servicesRes.data);
       setDentists(dentistsRes.data);
@@ -66,9 +66,9 @@ export default function StaffAdminDashboard() {
     e.preventDefault();
     try {
       if (editingService) {
-        await api.put(`services/${editingService.id}/`, serviceFormData);
+        await api.put(`/services/${editingService.id}/`, serviceFormData);
       } else {
-        await api.post("services/", serviceFormData);
+        await api.post("/services/", serviceFormData);
       }
       await fetchAllData();
       setShowServiceForm(false);
@@ -93,7 +93,7 @@ export default function StaffAdminDashboard() {
   const handleDeleteService = async (id) => {
     if (window.confirm("Delete this service?")) {
       try {
-        await api.delete(`services/${id}/`);
+        await api.delete(`/services/${id}/`);
         await fetchAllData();
       } catch (err) {
         setError("Failed to delete service");
@@ -111,9 +111,9 @@ export default function StaffAdminDashboard() {
     e.preventDefault();
     try {
       if (editingDentist) {
-        await api.put(`dentists/${editingDentist.id}/`, dentistFormData);
+        await api.put(`/dentists/${editingDentist.id}/`, dentistFormData);
       } else {
-        await api.post("dentists/", dentistFormData);
+        await api.post("/dentists/", dentistFormData);
       }
       await fetchAllData();
       setShowDentistForm(false);
@@ -139,7 +139,7 @@ export default function StaffAdminDashboard() {
   const handleDeleteDentist = async (id) => {
     if (window.confirm("Delete this dentist?")) {
       try {
-        await api.delete(`dentists/${id}/`);
+        await api.delete(`/dentists/${id}/`);
         await fetchAllData();
       } catch (err) {
         setError("Failed to delete dentist");

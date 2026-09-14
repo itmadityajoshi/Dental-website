@@ -20,7 +20,7 @@ export default function StaffServices() {
 
   const fetchServices = async () => {
     try {
-      const response = await api.get("services/");
+      const response = await api.get("/services/");
       setServices(response.data);
     } catch (error) {
       console.error("Error fetching services:", error);
@@ -42,9 +42,9 @@ export default function StaffServices() {
     setError(null);
     try {
       if (editingId) {
-        await api.put(`services/${editingId}/`, formData);
+        await api.put(`/services/${editingId}/`, formData);
       } else {
-        await api.post("services/", formData);
+        await api.post("/services/", formData);
       }
       fetchServices();
       setShowForm(false);
@@ -70,7 +70,7 @@ export default function StaffServices() {
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this service?")) {
       try {
-        await api.delete(`services/${id}/`);
+        await api.delete(`/services/${id}/`);
         fetchServices();
       } catch (error) {
         console.error("Error deleting service:", error);

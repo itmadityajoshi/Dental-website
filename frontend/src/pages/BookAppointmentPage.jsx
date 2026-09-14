@@ -32,7 +32,7 @@ function BookAppointmentPage() {
       .catch(console.error);
 
     api
-      .get("services/")
+      .get("/services/")
       .then((response) => setServices(response.data))
       .catch(console.error);
   }, []);

@@ -40,7 +40,7 @@ function PublicHomePage() {
 
   useEffect(() => {
     api
-      .get("services/")
+      .get("/services/")
       .then((response) => setServices(response.data))
       .catch(console.error);
   }, []);
