@@ -12,7 +12,7 @@ export const getDentist = async (id) => {
 
 export const getAvailableSlots = async (dentistId, date) => {
   const response = await api.get(
-    `dentists/${dentistId}/available-slots/?date=${date}`,
+    `/dentists/${dentistId}/available-slots/?date=${date}`,
   );
 
   return response.data.available_slots || [];
